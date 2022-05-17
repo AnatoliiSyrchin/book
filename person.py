@@ -20,6 +20,7 @@ class Manager(Person):
     def give_rise(self, percent):
         self.pay *= 1 + percent * 0.02
 
+
 if __name__ == '__main__':
     bob = Person('bob', 37, 40000, 'worker')
     mike = Manager('mike', 14)
@@ -28,4 +29,3 @@ if __name__ == '__main__':
     print(bob.__dict__)
     mike.give_rise(10)
     print(mike.__dict__)
-
