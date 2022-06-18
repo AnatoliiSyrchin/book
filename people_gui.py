@@ -18,9 +18,11 @@ def make_widgets():
         lab.grid(row=ix, column=0)
         ent.grid(row=ix, column=1)
         enteries[label] = ent
+        print(enteries[label])
     Button(window, text='Fetch', command=fetch_record).pack(side=LEFT)
     Button(window, text='Update', command=update_record).pack(side=LEFT)
     Button(window, text='Quit', command=window.quit).pack(side=RIGHT)
+    Button(window, text='Show All', command=show_all).pack(side=RIGHT)
     return window
 
 
@@ -28,7 +30,7 @@ def fetch_record():
     key = enteries['key'].get()
     try:
         record = db[key]
-    except:
+    except KeyError:
         messagebox.showerror(title='Error', message='No such key!')
     else:
         for field in fieldnames:
@@ -48,6 +50,14 @@ def update_record():
 
     db[key] = record
 
+def show_all():
+    show_all_window = Tk()
+    for i in db:
+        one_str = ''
+        for field in fieldnames:
+            one_str += repr(getattr(db[i], field))
+        Label(show_all_window, text = one_str).pack()
+    show_all_window.mainloop()
 
 db = shelve.open(shelvename)
 window = make_widgets()
