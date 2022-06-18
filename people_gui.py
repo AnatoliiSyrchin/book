@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter import messagebox
 import shelve
-shelvename = 'shelve-persone'
+
+
+shelve_name = 'shelve-persone'
 fieldnames = ('name', 'age', 'pay', 'job')
 
 
@@ -37,6 +39,7 @@ def fetch_record():
             enteries[field].delete(0, END)
             enteries[field].insert(0, repr(getattr(record, field)))
 
+
 def update_record():
     key = enteries['key'].get()
     if key in db:
@@ -59,7 +62,7 @@ def show_all():
         Label(show_all_window, text = one_str).pack()
     show_all_window.mainloop()
 
-db = shelve.open(shelvename)
+db = shelve.open(shelve_name)
 window = make_widgets()
 window.mainloop()
 db.close()
