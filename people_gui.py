@@ -20,7 +20,6 @@ def make_widgets():
         lab.grid(row=ix, column=0)
         ent.grid(row=ix, column=1)
         enteries[label] = ent
-        print(enteries[label])
     Button(window, text='Fetch', command=fetch_record).pack(side=LEFT)
     Button(window, text='Update', command=update_record).pack(side=LEFT)
     Button(window, text='Quit', command=window.quit).pack(side=RIGHT)
@@ -55,12 +54,16 @@ def update_record():
 
 def show_all():
     show_all_window = Tk()
-    for i in db:
-        one_str = ''
-        for field in fieldnames:
-            one_str += repr(getattr(db[i], field))
-        Label(show_all_window, text = one_str).pack()
+    for num, i in enumerate(db):
+        Label(show_all_window, text='key: ' + i + '....').grid(row=num, column=0)
+        for num1, field in enumerate(fieldnames):
+            one_str = repr(getattr(db[i], field))
+            Label(show_all_window, text=field + ': ' + one_str).grid(row=num, column=num1 + 1)
+        Button(show_all_window, text='Delete' + i, command=lambda: del_from_db(i)).grid(row=num, column=num1 + 2)
     show_all_window.mainloop()
+
+def del_from_db(key):
+    del db[key]
 
 db = shelve.open(shelve_name)
 window = make_widgets()
