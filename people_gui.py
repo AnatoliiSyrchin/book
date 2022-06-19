@@ -1,4 +1,5 @@
 from tkinter import *
+from functools import partial
 from tkinter import messagebox
 import shelve
 
@@ -8,18 +9,18 @@ fieldnames = ('name', 'age', 'pay', 'job')
 
 
 def make_widgets():
-    global enteries
+    global entries
     window = Tk()
     window.title('People Shelve')
     form = Frame(window)
     form.pack()
-    enteries = {}
+    entries = {}
     for (ix, label) in enumerate(('key',) + fieldnames):
         lab = Label(form, text=label)
         ent = Entry(form)
         lab.grid(row=ix, column=0)
         ent.grid(row=ix, column=1)
-        enteries[label] = ent
+        entries[label] = ent
     Button(window, text='Fetch', command=fetch_record).pack(side=LEFT)
     Button(window, text='Update', command=update_record).pack(side=LEFT)
     Button(window, text='Quit', command=window.quit).pack(side=RIGHT)
@@ -28,19 +29,19 @@ def make_widgets():
 
 
 def fetch_record():
-    key = enteries['key'].get()
+    key = entries['key'].get()
     try:
         record = db[key]
     except KeyError:
         messagebox.showerror(title='Error', message='No such key!')
     else:
         for field in fieldnames:
-            enteries[field].delete(0, END)
-            enteries[field].insert(0, repr(getattr(record, field)))
+            entries[field].delete(0, END)
+            entries[field].insert(0, repr(getattr(record, field)))
 
 
 def update_record():
-    key = enteries['key'].get()
+    key = entries['key'].get()
     if key in db:
         record = db[key]
     else:
@@ -48,7 +49,7 @@ def update_record():
         record = Person(name='?', age='?')
 
     for field in fieldnames:
-        setattr(record, field, eval(enteries[field].get()))
+        setattr(record, field, eval(entries[field].get()))
 
     db[key] = record
 
@@ -59,7 +60,7 @@ def show_all():
         for num1, field in enumerate(fieldnames):
             one_str = repr(getattr(db[i], field))
             Label(show_all_window, text=field + ': ' + one_str).grid(row=num, column=num1 + 1)
-        Button(show_all_window, text='Delete' + i, command=lambda: del_from_db(i)).grid(row=num, column=num1 + 2)
+        Button(show_all_window, text='Delete' + i, command=partial(del_from_db, i)).grid(row=num, column=num1 + 2)
     show_all_window.mainloop()
 
 def del_from_db(key):
